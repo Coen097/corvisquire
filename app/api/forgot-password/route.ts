@@ -7,6 +7,7 @@ import { sendMail } from "@/lib/sendMail";
 import { transporter } from "@/utils/transporters/transporter";
 
 const DOMAIN = process.env.DOMAIN as string
+const SENDER_EMAIL = process.env.SENDER_EMAIL as string
 
 export async function POST(request: Request) {
 
@@ -40,14 +41,14 @@ export async function POST(request: Request) {
         }
 
         if (user.resetPasswordCounter > 5) {
-            
+
             try {
-            
+
                 await sendMail({
                     to: email,
                     from: {
                         name: 'Persephone Stephenson from Thwackey',
-                        email: 'persephonestephenson@gmail.com'
+                        email: SENDER_EMAIL
                     },
                     subject: "Password Reset Attempts Exceeded",
                     html: `
@@ -57,12 +58,12 @@ export async function POST(request: Request) {
                 });
 
             } catch (error) {
-            
+
                 try {
-            
+
                     await transporter.sendMail({
                         to: email,
-                        from: 'persephonestephenson@gmail.com',
+                        from: SENDER_EMAIL,
                         subject: "Password Reset Attempts Exceeded",
                         html: `
                         <p>You've exceeded the maximum number of password reset attempts.</p>
@@ -71,14 +72,14 @@ export async function POST(request: Request) {
                     })
 
                 } catch (error) {
-            
+
                     return NextResponse.json(
                         { message: "Oops! Something went wrong while trying to send your confirmation email. Please try again later." },
                         { status: 502, statusText: "Bad Gateway" }
                     );
-            
+
                 }
-            
+
             }
 
             return NextResponse.json(
@@ -95,7 +96,7 @@ export async function POST(request: Request) {
                 to: email,
                 from: {
                     name: 'Persephone Stephenson from Thwackey',
-                    email: 'persephonestephenson@gmail.com'
+                    email: SENDER_EMAIL
                 },
                 subject: "Password Reset Request",
                 html: `
@@ -113,7 +114,7 @@ export async function POST(request: Request) {
 
                 await transporter.sendMail({
                     to: email,
-                    from: 'persephonestephenson@gmail.com',
+                    from: SENDER_EMAIL,
                     subject: "Password Reset Request",
                     html: `
                     <h3>Password Reset Request</h3>

@@ -9,6 +9,8 @@ import { Users } from "@/database/models/userModel";
 import { sendMail } from "@/lib/sendMail";
 import { transporter } from "@/utils/transporters/transporter";
 
+const SENDER_EMAIL = process.env.SENDER_EMAIL as string
+
 export async function PUT(request: Request) {
 
     try {
@@ -74,7 +76,7 @@ export async function PUT(request: Request) {
                 to: user.email,
                 from: {
                     name: 'Persephone Stephenson from Thwackey',
-                    email: 'persephonestephenson@gmail.com'
+                    email: SENDER_EMAIL
                 },
                 subject: "Your Password Has Been Successfully Changed",
                 html: `
@@ -89,7 +91,7 @@ export async function PUT(request: Request) {
 
                 await transporter.sendMail({
                     to: user.email,
-                    from: 'persephonestephenson@gmail.com',
+                    from: SENDER_EMAIL,
                     subject: "Your Password Has Been Successfully Changed",
                     html: `
                     <h1>Congratulations!</h1>

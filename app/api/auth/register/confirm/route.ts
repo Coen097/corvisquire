@@ -8,6 +8,8 @@ import { Users } from "@/database/models/userModel";
 import { sendMail } from "@/lib/sendMail";
 import { transporter } from "@/utils/transporters/transporter";
 
+const SENDER_EMAIL = process.env.SENDER_EMAIL as string
+
 export async function PUT(request: Request) {
 
     try {
@@ -54,7 +56,7 @@ export async function PUT(request: Request) {
                 to: user.email,
                 from: {
                     name: "Persephone Stephenson from Thwackey",
-                    email: "persephonestephenson@gmail.com"
+                    email: SENDER_EMAIL
                 },
                 subject: "Your Account Has Been Verified!",
                 text: `Hello ${user.username},\n\nCongratulations! Your account has been successfully verified. You can now access all features of our service.\n\nThank you for registering with us!`,
@@ -62,26 +64,26 @@ export async function PUT(request: Request) {
             });
 
         } catch (error) {
-            
+
             try {
-            
+
                 await transporter.sendMail({
                     to: user.email,
-                    from: "persephonestephenson@gmail.com",
+                    from: SENDER_EMAIL,
                     subject: "Your Account Has Been Verified!",
                     text: `Hello ${user.username},\n\nCongratulations! Your account has been successfully verified. You can now access all features of our service.\n\nThank you for registering with us!`,
                     html: `<p>Hello ${user.username},</p><p>Congratulations! Your account has been successfully verified. You can now access all features of our service.</p><p>Thank you for registering with us!</p>`,
                 })
-            
+
             } catch (error) {
 
                 return NextResponse.json(
                     { message: "Oops! Something went wrong while trying to send your email. Please try again later.", },
                     { status: 502, statusText: "Bad Gateway", }
                 );
-            
+
             }
-        
+
         }
 
         return NextResponse.json(

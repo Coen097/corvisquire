@@ -9,6 +9,7 @@ import { sendMail } from "@/lib/sendMail";
 import { transporter } from "@/utils/transporters/transporter";
 
 const DOMAIN = process.env.DOMAIN as string
+const SENDER_EMAIL = process.env.SENDER_EMAIL as string
 
 export async function POST(request: Request) {
 
@@ -60,7 +61,7 @@ export async function POST(request: Request) {
                 to: email,
                 from: {
                     name: 'Persephone Stephenson from Thwackey',
-                    email: 'persephonestephenson@gmail.com'
+                    email: SENDER_EMAIL
                 },
                 subject: 'Complete Your Registration',
                 text: `Hi ${username},\n\nPlease click the following link to confirm your account:\n\n${confirmationUrl}`,
@@ -73,19 +74,19 @@ export async function POST(request: Request) {
 
                 await transporter.sendMail({
                     to: email,
-                    from: 'persephonestephenson@gmail.com',
+                    from: SENDER_EMAIL,
                     subject: 'Complete Your Registration',
                     text: `Hi ${username},\n\nPlease click the following link to confirm your account:\n\n${confirmationUrl}`,
                     html: `<p>Hi ${username},</p><p>Please click the following link to confirm your account:</p><p><a href="${confirmationUrl}">Confirm Account</a></p>`,
                 })
-            
+
             } catch (error) {
 
                 return NextResponse.json(
                     { message: "Oops! Something went wrong while trying to send your email. Please try again later.", },
                     { status: 500, statusText: "Internal Server Error", }
                 );
-            
+
             }
 
         }
